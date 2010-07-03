@@ -9,6 +9,12 @@ module AASM::Persistence
     if hierarchy.include?("ActiveRecord::Base")
       require File.join(File.dirname(__FILE__), 'persistence', 'active_record_persistence')
       base.send(:include, AASM::Persistence::ActiveRecordPersistence)
+    elsif hierarchy.include?("Mongoid::Document")
+      require File.join(File.dirname(__FILE__), 'persistence', 'mongoid_persistence')
+      base.send(:include, AASM::Persistence::MongoidPersistence)
+    elsif hierarchy.include?("MongoMapper::Document")
+      require File.join(File.dirname(__FILE__), 'persistence', 'mongo_mapper_persistence')
+      base.send(:include, AASM::Persistence::MongoMapperPersistence)
     end
   end
 end
