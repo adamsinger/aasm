@@ -40,18 +40,18 @@ module AASM
         base.send(:include, AASM::Persistence::MongoidPersistence::WriteState) unless base.method_defined?(:aasm_write_state)
         base.send(:include, AASM::Persistence::MongoidPersistence::WriteStateWithoutPersistence) unless base.method_defined?(:aasm_write_state_without_persistence)
 
-        # if base.respond_to?(:named_scope)
-        #   base.extend(AASM::Persistence::MongoidPersistence::NamedScopeMethods)
-        # 
-        #   base.class_eval do
-        #     class << self
-        #       unless method_defined?(:aasm_state_without_named_scope)
-        #         alias_method :aasm_state_without_named_scope, :aasm_state
-        #         alias_method :aasm_state, :aasm_state_with_named_scope
-        #       end
-        #     end
-        #   end
-        # end
+        if base.respond_to?(:scope)
+          base.extend(AASM::Persistence::MongoidPersistence::NamedScopeMethods)
+        
+          base.class_eval do
+            class << self
+              unless method_defined?(:aasm_state_without_named_scope)
+                alias_method :aasm_state_without_named_scope, :aasm_state
+                alias_method :aasm_state, :aasm_state_with_named_scope
+              end
+            end
+          end
+        end
 
         # Mongoid's Validatable gem dependency goes not have a before_validation_on_xxx hook yet.
         # base.before_validation_on_create :aasm_ensure_initial_state
